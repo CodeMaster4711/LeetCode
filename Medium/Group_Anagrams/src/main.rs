@@ -1,26 +1,27 @@
+use std::collections::HashMap;
+
 struct Solution;
 
 impl Solution {
     pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
-        let mut anagram_map: std::collections::HashMap<String, Vec<String>> =
-            std::collections::HashMap::new();
+        let mut anagram_map: HashMap<[u32; 26], Vec<String>> = HashMap::new();
 
         for s in strs {
-            let key = Self::normalize_for_anagram(&s);
+            let key = Self::get_char_count(&s);
             anagram_map.entry(key).or_default().push(s);
         }
-
         anagram_map.into_values().collect()
     }
 
-    fn normalize_for_anagram(s: &str) -> String {
-        let mut chars: Vec<char> = s
-            .to_lowercase()
-            .chars()
-            .filter(|c| c.is_alphabetic())
-            .collect();
-        chars.sort_unstable();
-        chars.into_iter().collect()
+    fn get_char_count(s: &str) -> [u32; 26] {
+        let mut count = [0u32; 26];
+        for c in s.chars() {
+            if c.is_ascii_lowercase() {
+                let idx = (c as u8 - b'a') as usize;
+                count[idx] += 1;
+            }
+        }
+        count
     }
 }
 
